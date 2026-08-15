@@ -11,7 +11,7 @@ pkgs.mkShell {
 
   buildInputs = with pkgs; [
     openssl
-  ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+  ] ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
     alsa-lib
     gtk3
     cairo
@@ -20,16 +20,10 @@ pkgs.mkShell {
     atk
     gdk-pixbuf
     dbus
-  ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin (with pkgs.darwin.apple_sdk.frameworks; [
-    AppKit
-    CoreGraphics
-    CoreAudio
-    AudioUnit
-    AudioToolbox
-    MediaPlayer
-    Security
-    SystemConfiguration
-  ]);
+  ] ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+    apple-sdk
+    libiconv
+  ];
 
   shellHook = ''
     export PKG_CONFIG_PATH="${pkgs.openssl.dev}/lib/pkgconfig:$PKG_CONFIG_PATH"
