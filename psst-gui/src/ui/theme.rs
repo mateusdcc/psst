@@ -48,6 +48,11 @@ pub fn setup(env: &mut Env, state: &AppState) {
         Theme::Dark => setup_dark_theme(env),
     };
 
+    let css_colors = super::theme_css::load_theme_css();
+    if let Some(ref colors) = css_colors {
+        super::theme_css::apply_palette_overrides(env, colors);
+    }
+
     env.set(WINDOW_BACKGROUND_COLOR, env.get(GREY_700));
     env.set(TEXT_COLOR, env.get(GREY_100));
     env.set(ICON_COLOR, env.get(GREY_400));
@@ -126,6 +131,10 @@ pub fn setup(env: &mut Env, state: &AppState) {
     env.set(MENU_BUTTON_BG_INACTIVE, env.get(GREY_600));
     env.set(MENU_BUTTON_FG_ACTIVE, env.get(GREY_000));
     env.set(MENU_BUTTON_FG_INACTIVE, env.get(GREY_100));
+
+    if let Some(ref colors) = css_colors {
+        super::theme_css::apply_direct_overrides(env, colors);
+    }
 }
 
 fn setup_light_theme(env: &mut Env) {
