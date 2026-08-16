@@ -50,6 +50,7 @@ pub mod show;
 pub mod theme;
 pub mod theme_color;
 pub mod theme_css;
+pub mod theme_font;
 pub mod theme_parser;
 pub mod track;
 pub mod user;

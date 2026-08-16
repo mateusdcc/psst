@@ -1,7 +1,11 @@
-use druid::{Color, Env, Key};
+use druid::{Color, Env, FontDescriptor, FontFamily, FontWeight, Key};
 use std::{collections::HashMap, fs, path::PathBuf};
 
-use super::{theme, theme_parser::parse_theme_css};
+use super::{
+    theme,
+    theme_font::parse_font_family,
+    theme_parser::{parse_theme_css, ParsedTheme},
+};
 use crate::data::Config;
 
 pub fn find_theme_css_path() -> Option<PathBuf> {
@@ -20,7 +24,7 @@ pub fn find_theme_css_path() -> Option<PathBuf> {
     None
 }
 
-pub fn load_theme_css() -> Option<HashMap<String, Color>> {
+pub fn load_theme_css() -> Option<ParsedTheme> {
     let path = find_theme_css_path()?;
     let content = fs::read_to_string(&path).ok()?;
     log::info!("Loaded theme from CSS: {:?}", path);
@@ -50,13 +54,50 @@ pub fn apply_direct_overrides(env: &mut Env, colors: &HashMap<String, Color>) {
     apply_menu_overrides(env, colors);
 }
 
-fn apply_element_overrides(env: &mut Env, colors: &HashMap<String, Color>) {
-    set_if_present(
-        env,
-        colors,
-        "window_background_color",
-        theme::WINDOW_BACKGROUND_COLOR,
+pub fn apply_font_overrides(env: &mut Env, parsed: &ParsedTheme) {
+    let family = parsed
+        .font_family
+        .as_deref()
+        .map(parse_font_family)
+        .unwrap_or(FontFamily::SYSTEM_UI);
+
+    let mono_family = parsed
+        .font_family_mono
+        .as_deref()
+        .map(parse_font_family)
+        .unwrap_or(FontFamily::MONOSPACE);
+
+    let weight = parsed.font_weight.unwrap_or(FontWeight::REGULAR);
+    let weight_medium = parsed.font_weight_medium.unwrap_or(FontWeight::MEDIUM);
+
+    let size_small = parsed.font_size_small.unwrap_or(11.0);
+    let size_normal = parsed.font_size_normal.unwrap_or(13.0);
+    let size_large = parsed.font_size_large.unwrap_or(16.0);
+
+    env.set(theme::TEXT_SIZE_SMALL, size_small);
+    env.set(theme::TEXT_SIZE_NORMAL, size_normal);
+    env.set(theme::TEXT_SIZE_LARGE, size_large);
+
+    env.set(
+        theme::UI_FONT,
+        FontDescriptor::new(family.clone())
+            .with_size(size_normal)
+            .with_weight(weight),
     );
+    env.set(
+        theme::UI_FONT_MEDIUM,
+        FontDescriptor::new(family)
+            .with_size(size_normal)
+            .with_weight(weight_medium),
+    );
+    env.set(
+        theme::UI_FONT_MONO,
+        FontDescriptor::new(mono_family).with_size(size_normal),
+    );
+}
+
+fn apply_element_overrides(env: &mut Env, colors: &HashMap<String, Color>) {
+    set_if_present(env, colors, "window_background_color", theme::WINDOW_BACKGROUND_COLOR);
     set_if_present(env, colors, "text_color", theme::TEXT_COLOR);
     set_if_present(env, colors, "icon_color", theme::ICON_COLOR);
     set_if_present(env, colors, "placeholder_color", theme::PLACEHOLDER_COLOR);
@@ -73,53 +114,18 @@ fn apply_button_overrides(env: &mut Env, colors: &HashMap<String, Color>) {
     set_if_present(env, colors, "button_dark", theme::BUTTON_DARK);
     set_if_present(env, colors, "border_light", theme::BORDER_LIGHT);
     set_if_present(env, colors, "border_dark", theme::BORDER_DARK);
-    set_if_present(
-        env,
-        colors,
-        "selected_text_background_color",
-        theme::SELECTED_TEXT_BACKGROUND_COLOR,
-    );
-    set_if_present(
-        env,
-        colors,
-        "selection_text_color",
-        theme::SELECTION_TEXT_COLOR,
-    );
+    set_if_present(env, colors, "selected_text_background_color", theme::SELECTED_TEXT_BACKGROUND_COLOR);
+    set_if_present(env, colors, "selection_text_color", theme::SELECTION_TEXT_COLOR);
     set_if_present(env, colors, "cursor_color", theme::CURSOR_COLOR);
     set_if_present(env, colors, "scrollbar_color", theme::SCROLLBAR_COLOR);
-    set_if_present(
-        env,
-        colors,
-        "scrollbar_border_color",
-        theme::SCROLLBAR_BORDER_COLOR,
-    );
+    set_if_present(env, colors, "scrollbar_border_color", theme::SCROLLBAR_BORDER_COLOR);
 }
 
 fn apply_menu_overrides(env: &mut Env, colors: &HashMap<String, Color>) {
-    set_if_present(
-        env,
-        colors,
-        "menu_button_bg_active",
-        theme::MENU_BUTTON_BG_ACTIVE,
-    );
-    set_if_present(
-        env,
-        colors,
-        "menu_button_bg_inactive",
-        theme::MENU_BUTTON_BG_INACTIVE,
-    );
-    set_if_present(
-        env,
-        colors,
-        "menu_button_fg_active",
-        theme::MENU_BUTTON_FG_ACTIVE,
-    );
-    set_if_present(
-        env,
-        colors,
-        "menu_button_fg_inactive",
-        theme::MENU_BUTTON_FG_INACTIVE,
-    );
+    set_if_present(env, colors, "menu_button_bg_active", theme::MENU_BUTTON_BG_ACTIVE);
+    set_if_present(env, colors, "menu_button_bg_inactive", theme::MENU_BUTTON_BG_INACTIVE);
+    set_if_present(env, colors, "menu_button_fg_active", theme::MENU_BUTTON_FG_ACTIVE);
+    set_if_present(env, colors, "menu_button_fg_inactive", theme::MENU_BUTTON_FG_INACTIVE);
 }
 
 fn set_if_present(env: &mut Env, map: &HashMap<String, Color>, key: &str, target: Key<Color>) {
