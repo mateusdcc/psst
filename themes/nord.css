@@ -1,0 +1,30 @@
+/* Nord Theme for Psst */
+:root {
+    --grey-000: #eceff4;
+    --grey-100: #e5e9f0;
+    --grey-200: #d8dee9;
+    --grey-300: #4c566a;
+    --grey-400: #434c5e;
+    --grey-500: #3b4252;
+    --grey-600: #2e3440;
+    --grey-700: #242933;
+
+    --blue-100: #88c0d0;
+    --blue-200: #81a1c1;
+    --red: #bf616a;
+
+    --window-background-color: #242933;
+    --text-color: #eceff4;
+    --icon-color: #d8dee9;
+    --placeholder-color: #4c566a;
+    --primary-light: #88c0d0;
+    --primary-dark: #81a1c1;
+    --background-light: #2e3440;
+    --background-dark: #242933;
+    --button-light: #3b4252;
+    --button-dark: #2e3440;
+    --menu-button-bg-active: #3b4252;
+    --menu-button-bg-inactive: #2e3440;
+    --menu-button-fg-active: #eceff4;
+    --menu-button-fg-inactive: #d8dee9;
+}

@@ -1,0 +1,32 @@
+/* Catppuccin Mocha Theme for Psst */
+:root {
+    --grey-000: #cdd6f4;
+    --grey-100: #bac2de;
+    --grey-200: #a6adc8;
+    --grey-300: #9399b2;
+    --grey-400: #6c7086;
+    --grey-500: #45475a;
+    --grey-600: #313244;
+    --grey-700: #1e1e2e;
+
+    --blue-100: #89b4fa;
+    --blue-200: #b4befe;
+    --red: #f38ba8;
+
+    --window-background-color: #1e1e2e;
+    --text-color: #cdd6f4;
+    --icon-color: #a6adc8;
+    --placeholder-color: #6c7086;
+    --primary-light: #89b4fa;
+    --primary-dark: #b4befe;
+    --background-light: #313244;
+    --background-dark: #1e1e2e;
+    --foreground-light: #cdd6f4;
+    --foreground-dark: #f5e0dc;
+    --button-light: #45475a;
+    --button-dark: #313244;
+    --menu-button-bg-active: #45475a;
+    --menu-button-bg-inactive: #313244;
+    --menu-button-fg-active: #f5e0dc;
+    --menu-button-fg-inactive: #cdd6f4;
+}
