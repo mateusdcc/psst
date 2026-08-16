@@ -2,7 +2,7 @@
 
 use git_version::git_version;
 
-pub const GIT_VERSION: &str = git_version!();
+pub const GIT_VERSION: &str = git_version!(fallback = "0.1.0");
 pub const BUILD_TIME: &str = include!(concat!(env!("OUT_DIR"), "/build-time.txt"));
 pub const REMOTE_URL: &str = include!(concat!(env!("OUT_DIR"), "/remote-url.txt"));
 
