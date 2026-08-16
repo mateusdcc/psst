@@ -45,6 +45,47 @@
           libiconv
         ];
 
+        postInstall = ''
+          ln -s $out/bin/psst-gui $out/bin/psst
+
+          ${pkgs.lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''
+            mkdir -p $out/Applications/Psst.app/Contents/MacOS
+            mkdir -p $out/Applications/Psst.app/Contents/Resources
+
+            ln -s $out/bin/psst-gui $out/Applications/Psst.app/Contents/MacOS/psst-gui
+            cp psst-gui/assets/logo.icns $out/Applications/Psst.app/Contents/Resources/logo.icns 2>/dev/null || true
+
+            cat > $out/Applications/Psst.app/Contents/Info.plist <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleExecutable</key>
+    <string>psst-gui</string>
+    <key>CFBundleIconFile</key>
+    <string>logo.icns</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.jpochyla.psst</string>
+    <key>CFBundleName</key>
+    <string>Psst</string>
+    <key>CFBundleDisplayName</key>
+    <string>Psst</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>0.1.0</string>
+    <key>CFBundleVersion</key>
+    <string>0.1.0</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>11.0</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+</dict>
+</plist>
+EOF
+          ''}
+        '';
+
         meta = with pkgs.lib; {
           description = "Fast and native Spotify client";
           homepage = "https://github.com/jpochyla/psst";
